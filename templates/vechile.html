@@ -1,0 +1,308 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block title %}
+    {{vechile.name}} 
+{% endblock title %}
+
+
+
+{% block content %}
+<style>
+    input{
+        font-family: Arial!important;
+    }
+
+</style>
+<br><br><br>
+<div class="container fluid">
+    <div class="row m-0 p-0">
+       
+       
+        <div class="col-12 col-lg-4 mt-4">
+            <div class="card p-3">
+                <i class="fa fa-bus-alt"></i>
+                <hr>
+                <h4 class="text-success mt-2">
+                    {{vechile.name}} 
+                </h4>
+                <p>
+                    GPS Tracking No: {{vechile.gps_tracking_no}}
+                </p>
+                <p class="mt-2">
+                    Last grabed location :{{ details.position.address }}
+                </p>
+                <h4 class="badge bg-success">
+                    {{vechile.number_plate}}
+                </h4>
+                
+            </div>
+            <h4 class="p-2 m-2">
+                <i class="fa fa-user-check"></i>
+                {{vechile.name}} Drivers
+            </h4>
+            
+            {% for i in driver  %}
+                <div class="card p-3">
+                    <p>
+                        Name: {{i.name}}
+                    </p>
+                    <p>
+                        Address: {{i.address}}
+                    </p>
+                    <p>
+                        Phone: {{i.number}}
+                    </p>
+                   
+                   
+                   
+                    <span class="badge bg-danger">
+                        Joined on: {{i.joined_date}}
+                    </span>
+                </div>
+            {% endfor %}
+                
+
+        </div>
+
+        <div class="col-12 col-lg-8 mt-4">
+            <h1 class="mb-4">Vehicle Details: {{ vechile.name }}</h1>
+            <div class="row">
+                <div class="col-lg-3 col-6 mb-3">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fa fa-signal fa-2x mb-2"></i>
+                            <h5 class="card-title">Status</h5>
+                            {% if details %}
+                                {% if details.device.status == 'online' %}
+                                    <p class="text-success">Online</p>
+                                {% else %}
+                                    <p class="text-secondary">Offline</p>
+                                {% endif %}
+                            {% else %}
+                                <p class="text-muted">N/A</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-6 mb-3">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fa fa-clock fa-2x mb-2"></i>
+                            <h5 class="card-title">Last Update</h5>
+                            {% if details %}
+                                <p>{{ details.device.lastUpdate|slice:":19" }}</p>
+                            {% else %}
+                                <p class="text-muted">N/A</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-6 mb-3">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fa fa-battery-full fa-2x mb-2"></i>
+                            <h5 class="card-title">Battery Level</h5>
+                            {% if details %}
+                                <p>{{ details.position.attributes.batteryLevel }}%</p>
+                            {% else %}
+                                <p class="text-muted">N/A</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-6 mb-3">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fa fa-road fa-2x mb-2"></i>
+                            <h5 class="card-title">Total Distance</h5>
+                            {% if details %}
+                                <p>{{ details.position.attributes.totalDistance|floatformat:2 }} km</p>
+                            {% else %}
+                                <p class="text-muted">N/A</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-6 mb-3">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fa fa-map-marker fa-2x mb-2"></i>
+                            <h5 class="card-title">Longitude</h5>
+                            {% if details %}
+                                <p>{{ details.position.longitude }}</p>
+                            {% else %}
+                                <p class="text-muted">N/A</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-6 mb-3">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fa fa-map-marker fa-2x mb-2"></i>
+                            <h5 class="card-title">Latitude</h5>
+                            {% if details %}
+                                <p>{{ details.position.latitude }}</p>
+                            {% else %}
+                                <p class="text-muted">N/A</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-6 mb-3">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fa fa-tachometer fa-2x mb-2"></i>
+                            <h5 class="card-title">Speed</h5>
+                            {% if details %}
+                                <p>{{ details.position.speed|floatformat:2 }} km/h</p>
+                            {% else %}
+                                <p class="text-muted">N/A</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 mt-3">
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div id="map" style="height: 500px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 mt-3 table-responsive mt-4">
+            <h4>Maintanance Expenses</h4>
+            <hr>
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Vechile</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Maintanance Details</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    
+                    {% if not maintain %}
+                    <tr>
+                        
+                        <td><p>No Maintanance data added till now</p></td>
+                       
+                    </tr>
+                        
+                        {%else%}
+                            {% for i in maintain %}
+                            <tr>
+                                <th scope="row">{{i.date}}</th>
+                                <td>{{i.vechile}}</td>
+                                <td>Rs. {{i.price}}</td>
+                                <td>{{i.name}}</td>
+                            </tr>
+                            {% endfor %}
+                    {% endif %}
+                    
+                   
+                        
+                </tbody>
+              </table>
+        </div>
+    </div>
+</div>
+   
+
+<br><br><br>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB2x5e3pBsv9lPcLHTUJddyNzUcCzl9QI4&callback=initMap" async defer></script>
+
+<script>
+var map, marker, path, index = 0;
+var coordinates = [
+    { lat: 27.70989388888889, lng: 85.3694838888889 },
+    { lat: 27.71089388888889, lng: 85.3704838888889 },
+    { lat: 27.71189388888889, lng: 85.3714838888889 },
+    { lat: 27.71289388888889, lng: 85.3724838888889 },
+    { lat: 27.71389388888889, lng: 85.3734838888889 },
+    { lat: 27.71489388888889, lng: 85.3744838888889 },
+    { lat: 27.71589388888889, lng: 85.3754838888889 },
+    { lat: 27.71689388888889, lng: 85.3764838888889 },
+    { lat: 27.71789388888889, lng: 85.3774838888889 },
+    { lat: 27.71889388888889, lng: 85.3784838888889 }
+];
+
+function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 15,
+        center: coordinates[0]
+    });
+
+    marker = new google.maps.Marker({
+        position: coordinates[0],
+        map: map,
+        title: '{{ vechile.name }}',
+        icon: {
+            url: "http://maps.google.com/mapfiles/kml/shapes/cabs.png",
+            scaledSize: new google.maps.Size(40, 40)
+        }
+    });
+
+    var infowindow = new google.maps.InfoWindow({
+        content: '<b>{{ vechile.name }}</b><br>{{ details.position.address }}'
+    });
+
+    marker.addListener('click', function() {
+        infowindow.open(map, marker);
+    });
+
+    moveMarker();
+}
+
+function moveMarker() {
+    index = (index + 1) % coordinates.length;
+    marker.setPosition(coordinates[index]);
+    map.setCenter(coordinates[index]);
+
+    setTimeout(moveMarker, 2000); // Move marker every 2 seconds
+}
+</script>
+
+<!-- <script>
+function initMap() {
+    var mapOptions = {
+        zoom: 12,
+        center: { lat: {{ details.position.latitude }}, lng: {{ details.position.longitude }} }
+    };
+    var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+    var marker = new google.maps.Marker({
+        position: { lat: {{ details.position.latitude }}, lng: {{ details.position.longitude }} },
+        map: map,
+        title: '{{ vechile.name }}',
+        icon: {
+            url: "http://maps.google.com/mapfiles/kml/shapes/cabs.png",
+            scaledSize: new google.maps.Size(40, 40)
+        }
+    });
+
+    var infowindow = new google.maps.InfoWindow({
+        content: '<b>{{ vechile.name }}</b><br>{{ details.position.address }}'
+    });
+
+    marker.addListener('click', function() {
+        infowindow.open(map, marker);
+    });
+}
+</script> -->
+{% endblock content %}
+    
+    
+    

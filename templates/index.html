@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+{% load static %}
+{% load tz %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        
+        {% block title %}
+        जलजला गाउँपालिका GPS tracking
+        {% endblock title %}
+
+       
+
+    </title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        #map { height: 600px; width: 100%; }
+        .custom-label {
+            position: absolute;
+            white-space: nowrap;
+            font-size: 12px;
+            font-weight: bold;
+            color: black;
+            background: white;
+            padding: 2px;
+            border: 1px solid black;
+        }
+    </style>
+
+    {% block seo %}
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="जलजला गाउँपालिका GPS tracking">
+    <meta name="author" content="जलजला गाउँपालिका GPS tracking">
+
+    <!-- OG Meta Tags to improve the way the post looks when you share the page on Facebook, Twitter, LinkedIn -->
+    <meta property="og:site_name" content="जलजला गाउँपालिका GPS tracking" /> <!-- website name -->
+    <meta property="og:site" content="" /> <!-- website link -->
+    <meta property="og:title" content="जलजला गाउँपालिका GPS tracking"/> <!-- title shown in the actual shared post -->
+    <meta property="og:description" content="जलजला गाउँपालिका GPS tracking" /> <!-- description shown in the actual shared post -->
+  
+    {% endblock seo %}
+  
+    <link rel="stylesheet" href="{%static 'bootstrap/bootstrap.css'%}">
+    <link rel="stylesheet" href="{%static 'css/icons.css'%}">
+    <link rel="stylesheet" href="{%static 'css/style.css'%}">
+        
+</head>
+<body>
+    {% include 'element/navbar.html' %}
+    {% block content %}
+    <div class="container-fluid">
+        <div class="row p-2">
+           
+            <div class="col-lg-3 col-12 mt-3" id="backdown">
+                <h4 class="text-center text-primary p-3">
+                    Track in GPS
+                </h4>
+
+                <div class="chooseBox mt-2 actived">
+                    <div class="d-flex justify-content-between p-2">
+                        <img src="{%static 'image/all.png'%}" alt="">
+                        <h5 class="my-auto">All</h5>
+                    </div>
+                </div>
+
+                {% for i in vechile %}
+                    <a href="{% url 'homepage:vechile' i.id i.gps_tracking_no %}">
+                        <div class="chooseBox mt-3">
+                            <div class="d-flex justify-content-between p-2">
+                                <i class="fa fa-bus my-auto"></i>
+                                <!-- <img src="{% static 'image/ambulance.png' %}" alt=""> -->
+                                <div>
+                                    <h5 class="my-auto">
+                                        {{ i }}
+                                    </h5>
+                                    <small>
+                                        Tracker no: {{ i.gps_tracking_no }}
+                                    </small>
+                                    <hr class="m-0 p-2">
+                                    <div class="d-flex justify-content-between">
+                                        <span class="badge bg-danger">
+                                            {{ i.number_plate }} 
+                                        </span>
+                                        {% for key, devi in device.items %}
+                              
+                                            {% if key == i.id %}
+                                                
+                                                {% if devi.status == 'online' %}
+                                                    <span class="text-success">▲ Online</span>
+                                                    {%else%}
+                                                    <span class="text-secondary">▼ Offline</span>
+                                                {% endif %}
+    
+                                               
+                                            {% endif %}
+        
+                                        {% endfor %}
+                                    </div>
+            
+                                   
+                                    
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-center pb-3">
+                                <i class="fa fa-location me-3 my-auto" style="font-size: 24px;"></i> Live location:
+                                {% for keys, dev in position.items %}
+                        
+                                    {% if keys == i.id %}
+                                        <p class="my-auto text-dark ms-2">{{dev.address}}</p>
+
+                                        {%else%}
+                                        <p class="my-auto text-danger ms-2">Disconnected</p>
+                                       
+                                    {% endif %}
+
+                                {% endfor %}
+                            </div>
+                        
+                        </div>
+                    </a>
+                {% endfor %}
+
+                
+            </div>
+
+
+            <div class="col-lg-9 col-12 mt-3">
+                <div id="map"></div>
+            </div>
+        </div>
+    </div>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB2x5e3pBsv9lPcLHTUJddyNzUcCzl9QI4&callback=initMap" async defer></script>
+    <script>
+        function initMap() {
+            var map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: 27.7, lng: 85.3},
+                zoom: 13
+            });
+    
+            {% for i in vechile %}
+                {% for keys, dev in position.items %}
+                    {% if keys == i.id %}
+                        var marker = new google.maps.Marker({
+                            position: {lat: {{ dev.latitude }}, lng: {{ dev.longitude }}},
+                            map: map,
+                            icon: {
+                                url: 'https://maps.google.com/mapfiles/kml/shapes/cabs.png', // URL to car icon
+                                scaledSize: new google.maps.Size(32, 32) // Size of the icon
+                            },
+                            label: {
+                                text: '{{ i.name }}',
+                                color: 'black',
+                                fontSize: '12px',
+                                fontWeight: 'bold',
+                                className: 'custom-label'
+                            }
+                        });
+    
+                        var infowindow = new google.maps.InfoWindow({
+                            content: '<b>{{ i.name }}</b><br> {{ dev.address }}'
+                        });
+    
+                        marker.addListener('click', function() {
+                            infowindow.open(map, marker);
+                        });
+    
+                        // Create a custom overlay for the label
+                        var overlay = new google.maps.OverlayView();
+                        overlay.onAdd = function() {
+                            var div = document.createElement('div');
+                            div.className = 'custom-label';
+                            div.innerHTML = '{{ i.name }}';
+                            this.div = div;
+    
+                            var panes = this.getPanes();
+                            panes.overlayImage.appendChild(div);
+                        };
+                        overlay.draw = function() {
+                            var point = this.getProjection().fromLatLngToDivPixel(marker.getPosition());
+                            if (point) {
+                                this.div.style.left = point.x + 'px';
+                                this.div.style.top = (point.y - 30) + 'px'; // Adjust the position as needed
+                            }
+                        };
+                        overlay.onRemove = function() {
+                            this.div.parentNode.removeChild(this.div);
+                            this.div = null;
+                        };
+                        overlay.setMap(map);
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        }
+    </script>
+   
+    {% endblock content %}
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="{%static 'js/icon.js'%}"></script>
+    <script src="{%static 'bootstrap/bootstrap.js'%}"></script>
+
+
+
+    
+    
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script> -->
+        
+</body>
+
+</html>

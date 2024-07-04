@@ -1,0 +1,60 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block title %}
+    लग-इन
+{% endblock title %}
+
+
+
+{% block content %}
+<style>
+    input{
+        font-family: Arial!important;
+    }
+
+</style>
+<br><br><br>
+    <div class="row m-0">
+        <div class="col-11 col-lg-7 m-auto">
+            {% for i in messages  %}
+            <div class="alert alert-secondary alert-warning alert-dismissible fade show" role="alert">
+                {{i}}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+           
+            {% endfor %}
+            <div class="login-box p-2">
+                <div class="login-panel p-2 text-center">
+                    <img src="{%static 'image/banners.png'%}" alt="" style="height: auto; width: 100%;">
+                    <h1 class="text-center">लग-इन</h1>
+                    
+                    <hr>
+                    <form method = 'POST'>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">
+                                <i class="fa fa-user"></i>
+                            </span>
+                            <input type="text" name="username" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" required>
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">
+                                <i class="fa fa-key"></i>
+                            </span>
+                            <input type="password" name="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1" required>
+                        </div>
+                        {% csrf_token %}
+                        <button class="btn btn-primary w-100" type="submit">
+                            Login
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<br><br><br>
+{% endblock content %}
+    
+    
+    

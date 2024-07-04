@@ -1,0 +1,104 @@
+/* color code: #B3E2A7 #80B9AD #6295A2 #538392 */
+
+
+
+
+
+/* Navbar */
+#divisionImage{
+    width: 80%;
+    margin: auto 0;
+    height: auto;
+}
+
+.navbar{
+    background-color: #B3E2A7!important;
+
+}
+
+.navbar-brand svg{
+    font-size: 30px!important;
+    color: rgb(239, 239, 239)!important;
+}
+
+.navbar-brand svg:hover{
+    font-size: 30px!important;
+    color: #6295A2!important;
+    transition-duration: 1.2s;
+}
+
+.nav-link{
+    color: rgb(255, 255, 255)!important;
+}
+
+/* Ensure dropdowns show on hover */
+.nav-item.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.nav-item{
+    padding: 10px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Optional: Styling for dropdowns */
+.dropdown-menu {
+    display: none;
+    padding: 10px;
+    position: absolute;
+}
+
+.nav-item.dropdown:hover > .nav-link {
+    color: black!important;
+    border-radius: 20px;
+    background-color: #e6e6e6; /* or any other styling for the hovered item */
+}
+
+.dropdown-item{
+    padding: 5px;
+}
+
+.chooseBox{
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+.chooseBox img{
+    height: 60px;
+    width: 60px;
+}
+.actived{
+    background-color: #6295A2;
+    color: white;
+}
+
+#backdown{
+   
+    padding: 10px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+
+
+.card {
+    box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
+}
+.chooseBox svg{
+    font-size: 40px;
+}
+.card svg{
+    font-size: 60px;
+    color: #B3E2A7;
+}
+
+
+a{
+    text-decoration: none;
+}
+@media screen and (max-width: 600px){
+    #backdown{
+        height: auto!important
+    }
+}
